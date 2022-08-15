@@ -1,0 +1,136 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+    <link rel="icon" href="//add image link or image path" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <title>My PDF Viewer</title>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js">
+
+  </script>
+
+  <style>
+      #canvas_container {
+          width: 800px;
+          height: 500px;
+          overflow: auto;
+      }
+      #canvas_container {
+        background: #007bff;
+        text-align: center;
+        border: solid 3px;
+          border-color:  #007bff;
+      }
+  </style>
+</head>
+<body>
+<div class="jumbotron text-center" >
+
+    <h1>Kenyan Tallying Center</h1>
+
+    <div>
+        <a href="/">
+            <button type="button" class="btn btn-primary">Home</button>
+        </a>
+        <a href="/jobs">
+            <button type="button" class="btn btn-primary">Background jobs</button>
+        </a>
+         <a href="/results">
+            <button type="button" class="btn btn-primary">Results</button>
+        </a>
+
+    </div>
+
+</div>
+
+<div class="container pl-0" style="max-width: 95%;">
+<div class="row">
+	<div class="col-7">
+      <div id="my_pdf_viewer" >
+        <div id="canvas_container">
+            <canvas id="pdf_renderer"></canvas>
+        </div>
+
+    </div>
+    </div>
+    <div class="col-5">
+
+
+        <form>
+          <div class="form-group">
+            <label for="Raila">Raila</label>
+            <input type="text" class="form-control" id="Raila"  placeholder="---">
+          </div>
+          <div class="form-group">
+            <label for="Ruto">Ruto</label>
+            <input type="text" class="form-control" id="Ruto" placeholder="---">
+          </div>
+            <div class="form-group">
+            <label for="Wajackoyah">Wajackoyah</label>
+            <input type="text" class="form-control" id="Wajackoyah" placeholder="---">
+          </div>
+            <div class="form-group">
+            <label for="Mwaure">Mwaure</label>
+            <input type="text" class="form-control" id="Mwaure" placeholder="---">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+
+</div>
+</div>
+    <script>
+        var myState = {
+            pdf: null,
+            currentPage: 1,
+            zoom: 0.5
+        }
+
+        pdfjsLib.getDocument(src='/image_view/1_34_A_001001000100101_F230450M00211201_20220809_205958.PDF').then((pdf) => {
+
+            myState.pdf = pdf;
+            render();
+
+        });
+
+        function render() {
+            myState.pdf.getPage(myState.currentPage).then((page) => {
+
+                var canvas = document.getElementById("pdf_renderer");
+                var ctx = canvas.getContext('2d');
+
+                var viewport = page.getViewport(myState.zoom);
+
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                page.render({
+                    canvasContext: ctx,
+                    viewport: viewport
+                });
+            });
+        }
+
+
+
+        document.getElementById('zoom_in').addEventListener('click', (e) => {
+            if(myState.pdf == null) return;
+            myState.zoom += 0.1;
+			console.log(myState.zoom)
+            render();
+        });
+
+        document.getElementById('zoom_out').addEventListener('click', (e) => {
+            if(myState.pdf == null) return;
+            myState.zoom -= 0.1;
+            render();
+        });
+    </script>
+</body>
+</html>
